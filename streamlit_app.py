@@ -236,14 +236,50 @@ def main():
                         st.session_state.canvas_key = f"canvas_{uploaded_file.name}_{st.session_state.current_page_for_canvas}"
 
                 current_pil_image = st.session_state.pil_images_for_processing[st.session_state.current_page_for_canvas]
-                st.session_state.canvas_image_to_draw_on = current_pil_image.copy()
+                # Ensure current_pil_image is a PIL Image before copying
+                if isinstance(current_pil_image, Image.Image):
+                    st.session_state.canvas_image_to_draw_on = current_pil_image.copy()
+                else:
+                    log_message(f"Error: current_pil_image is not a PIL Image. Type: {type(current_pil_image)}", "error")
+                    st.session_state.canvas_image_to_draw_on = None # Set to None to prevent further errors
 
                 # --- DEBUGGING STEP: Display the image using st.image ---
-                if st.session_state.canvas_image_to_draw_on:
+                log_message(f"Debug: Type of canvas_image_to_draw_on before 'if': {type(st.session_state.canvas_image_to_draw_on)}", "info")
+                log_message(f"Debug: Value of current_page_for_canvas: {st.session_state.current_page_for_canvas}, Type: {type(st.session_state.current_page_for_canvas)}", "info")
+
+                if st.session_state.canvas_image_to_draw_on and isinstance(st.session_state.canvas_image_to_draw_on, Image.Image):
                     st.write("Debug: Image for canvas background")
-                    # Add a unique key to st.image to force re-render
-                    st.image(st.session_state.canvas_image_to_draw_on, caption="Image to be used on canvas", use_column_width=True, key=f"debug_img_page_{st.session_state.current_page_for_canvas}")
-                    log_message(f"Debug: Canvas image mode: {st.session_state.canvas_image_to_draw_on.mode}, size: {st.session_state.canvas_image_to_draw_on.size}", "info")
+                    
+                    page_key_suffix = "invalid_page_idx"
+                    if isinstance(st.session_state.current_page_for_canvas, int):
+                        page_key_suffix = str(st.session_state.current_page_for_canvas)
+                    else:
+                        log_message(f"Warning: current_page_for_canvas is not an int: {st.session_state.current_page_for_canvas}", "warning")
+
+                    current_image_key = f"debug_img_page_{page_key_suffix}"
+                    log_message(f"Debug: Using key for st.image: {current_image_key}", "info")
+
+                    try:
+                        st.image(
+                            st.session_state.canvas_image_to_draw_on, 
+                            caption="Image to be used on canvas", 
+                            use_column_width=True, 
+                            key=current_image_key
+                        )
+                        log_message(f"Debug: Successfully called st.image with key {current_image_key}. Image mode: {st.session_state.canvas_image_to_draw_on.mode}, size: {st.session_state.canvas_image_to_draw_on.size}", "info")
+                    except TypeError as te:
+                        log_message(f"CRITICAL: TypeError directly from st.image call. Key was: {current_image_key}. Image type: {type(st.session_state.canvas_image_to_draw_on)}", "error")
+                        log_message(f"TypeError details: {str(te)}", "error")
+                        st.error("Failed to display debug image due to a TypeError. Check logs for CRITICAL messages.")
+                    except Exception as e:
+                        log_message(f"CRITICAL: Exception directly from st.image call. Key was: {current_image_key}. Image type: {type(st.session_state.canvas_image_to_draw_on)}", "error")
+                        log_message(f"Exception details: {str(e)}", "error")
+                        st.error("Failed to display debug image due to an unexpected error. Check logs for CRITICAL messages.")
+                        
+                elif st.session_state.canvas_image_to_draw_on is None:
+                    log_message("Debug: canvas_image_to_draw_on is None. Skipping st.image.", "warning")
+                else:
+                    log_message(f"Debug: canvas_image_to_draw_on is not a PIL Image. Type: {type(st.session_state.canvas_image_to_draw_on)}. Skipping st.image.", "warning")
                 # --- END DEBUGGING STEP ---
 
                 st.write(f"Draw rectangles on Page {st.session_state.current_page_for_canvas + 1} below:")
