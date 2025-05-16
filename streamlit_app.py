@@ -238,6 +238,13 @@ def main():
                 current_pil_image = st.session_state.pil_images_for_processing[st.session_state.current_page_for_canvas]
                 st.session_state.canvas_image_to_draw_on = current_pil_image.copy()
 
+                # --- DEBUGGING STEP: Display the image using st.image ---
+                if st.session_state.canvas_image_to_draw_on:
+                    st.write("Debug: Image for canvas background")
+                    st.image(st.session_state.canvas_image_to_draw_on, caption="Image to be used on canvas", use_column_width=True)
+                    log_message(f"Debug: Canvas image mode: {st.session_state.canvas_image_to_draw_on.mode}, size: {st.session_state.canvas_image_to_draw_on.size}", "info")
+                # --- END DEBUGGING STEP ---
+
                 st.write(f"Draw rectangles on Page {st.session_state.current_page_for_canvas + 1} below:")
                 
                 img_width, img_height = st.session_state.canvas_image_to_draw_on.size
