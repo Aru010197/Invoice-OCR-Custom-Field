@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Invoice OCR Tool (Streamlit Version)
 
 A Python utility for converting scanned invoices to structured Excel format with OCR text extraction, now using Streamlit for a web-based interface.
