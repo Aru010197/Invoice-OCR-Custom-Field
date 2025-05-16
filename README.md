@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Invoice OCR Tool (Streamlit Version)
 
 A Python utility for converting scanned invoices to structured Excel format with OCR text extraction, now using Streamlit for a web-based interface.
@@ -115,3 +116,6 @@ This tool allows you to extract data from scanned invoices (PDF, JPG, PNG format
 - Works best with clearly structured, machine-printed invoices.
 - OCR accuracy depends heavily on the quality and clarity of the scanned document.
 - Complex layouts or handwritten invoices may result in lower accuracy.
+=======
+# Invoice-OCR-Custom-Field
+>>>>>>> 23914deb889a1fb46c9416f90a73b48627b47e36
