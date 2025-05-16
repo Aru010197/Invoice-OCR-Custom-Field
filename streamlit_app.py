@@ -279,8 +279,15 @@ def main():
                     field_name_input = st.text_input("Enter Field Name for Last Drawn Rectangle", key=f"field_name_{st.session_state.canvas_key}")
 
                     if st.button("Save Last Drawn Field", key=f"save_field_{st.session_state.canvas_key}"):
-                        if field_name_input and canvas_result.json_data["objects"]:
+                        log_message(f"Save button clicked. Field name input: '{field_name_input}'", "info") # Changed to info for visibility
+                        if canvas_result.json_data and canvas_result.json_data.get("objects"):
+                            log_message(f"Canvas JSON data objects: {canvas_result.json_data['objects']}", "info") # Changed to info
+                        else:
+                            log_message("Canvas JSON data is None or has no objects upon save click.", "warning")
+
+                        if field_name_input and canvas_result.json_data and canvas_result.json_data.get("objects"):
                             last_object = canvas_result.json_data["objects"][-1]
+                            log_message(f"Last object from canvas: {last_object}", "info") # Changed to info
                             if last_object["type"] == "rect":
                                 orig_w, orig_h = st.session_state.canvas_image_to_draw_on.size
                                 # Use canvas_width_main, canvas_height_main from col1 for scaling
@@ -302,8 +309,10 @@ def main():
                                 st.experimental_rerun()
                         elif not field_name_input:
                             st.warning("Please enter a name for the field.")
+                        elif not (canvas_result.json_data and canvas_result.json_data.get("objects")):
+                            st.warning("Please draw a rectangle on the canvas first. No objects found in canvas data.")
                         else:
-                            st.warning("Please draw a rectangle on the canvas first.")
+                            st.warning("Please draw a rectangle and enter a field name.")
                 
                 if st.session_state.selected_fields_template:
                     st.markdown("---")
