@@ -241,7 +241,8 @@ def main():
                 # --- DEBUGGING STEP: Display the image using st.image ---
                 if st.session_state.canvas_image_to_draw_on:
                     st.write("Debug: Image for canvas background")
-                    st.image(st.session_state.canvas_image_to_draw_on, caption="Image to be used on canvas", use_column_width=True)
+                    # Add a unique key to st.image to force re-render
+                    st.image(st.session_state.canvas_image_to_draw_on, caption="Image to be used on canvas", use_column_width=True, key=f"debug_img_page_{st.session_state.current_page_for_canvas}")
                     log_message(f"Debug: Canvas image mode: {st.session_state.canvas_image_to_draw_on.mode}, size: {st.session_state.canvas_image_to_draw_on.size}", "info")
                 # --- END DEBUGGING STEP ---
 
